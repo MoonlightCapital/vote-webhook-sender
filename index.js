@@ -1,10 +1,8 @@
 require('dotenv').config()
 const fs = require('fs')
+const phin = require('phin')
 
 const app = require('./app')
-const {WebhookClient} = require('discord.js')
-
-const webhook = new WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN)
 
 global.lists = []
 
@@ -23,12 +21,34 @@ for(const file of listFiles) {
 
   console.log(listInstance)
 
-  app[listInstance.endpointMethod](listInstance.endpoint, (req, res) => {
+  app[listInstance.endpointMethod](listInstance.endpoint, async (req, res) => {
 
-    webhook.send(JSON.stringify(listInstance.getVoteJSON(req, res)))
+    const vote = listInstance.getVoteJSON(req, res)
+
+    phin({
+      url: process.env.WEBHOOK_URL,
+
+      method: 'POST',
+
+      headers: {
+        'content-type': 'Application/JSON'
+      },
+
+      data: JSON.stringify({
+        content: JSON.stringify(vote)
+      })
+    }).then(res => {
+      if(res.error)
+        return console.error('Error sending webhook to Discord', res.error)
+
+      console.log('Webhook sent to discord')
+    })
+    .catch(e => {
+      console.error('Error sending webhook to Discord', e)
+    })
 
     if(process.env.NODE_ENV === 'development')
-      res.send(listInstance.getVoteJSON(req, res))
+      res.send(vote)
     else
       res.status(200).send({success: true})
   })
