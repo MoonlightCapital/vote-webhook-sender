@@ -11,7 +11,7 @@ global.lists = []
 const listFiles = fs.readdirSync('classes/botLists')
 
 for(const file of listFiles) {
-  const L = require(`./classes/botlists/${file}`)
+  const L = require(`./classes/botLists/${file}`)
 
   const listInstance = new L()
 
