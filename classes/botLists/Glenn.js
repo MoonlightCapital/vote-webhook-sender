@@ -11,7 +11,7 @@ module.exports = class GlennList extends BaseList {
   }
 
   getVoteUser(req, res) {
-    return req.body.user
+    return req.body.id
   }
 
 }
