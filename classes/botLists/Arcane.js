@@ -11,7 +11,7 @@ module.exports = class ArcaneList extends BaseList {
   }
 
   getVoteUser(req, res) {
-    return req.body.user.id
+    return req.body.author.user.id
   }
 
 }
