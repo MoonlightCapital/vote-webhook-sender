@@ -19,9 +19,12 @@ for(const file of listFiles) {
     continue
   }
 
-  console.log(listInstance)
+  if(process.env.NODE_ENV === 'development') console.log(listInstance)
 
   app[listInstance.endpointMethod](listInstance.endpoint, async (req, res) => {
+
+    if(!(await listInstance.isValid(req, res)))
+      return res.status(401).send({success: false, error: 'Error while validating the data'})
 
     const vote = listInstance.getVoteJSON(req, res)
 
