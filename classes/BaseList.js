@@ -13,6 +13,10 @@ module.exports = class BaseList {
 
   }
 
+  async isValid(req, res) {
+    return true
+  }
+
   getAuth(req, res) {
     return req.headers.authorization
   }
